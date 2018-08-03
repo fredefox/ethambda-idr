@@ -1,17 +1,23 @@
-{-# Language GADTs
-  , LambdaCase
-  , FlexibleContexts
-  , ConstraintKinds
-  , StandaloneDeriving
-#-}
-module Ethambda.Common ((<.>), (<.)) where
+module Ethambda.Common
 
-(<.>) :: String -> String -> String
-(<.>) s = \case
-  [] -> s
-  s' -> s <> " " <> s'
+import Eth.Prelude
 
-(<.) :: String -> ShowS -> ShowS
-s <. c = (s <.>) . c
 infixr 3 <.
+infixr 3 <.>
+
+export
+(<.>) : String -> String -> String
+v <.> w =
+  if isNullStr v
+  then v
+  else v ++ " " ++ " " ++ w
+
+export
+ShowS : Type
+ShowS = String -> String
+
+export
+(<.) : String -> ShowS -> ShowS
+s <. c = (s <.>) . c
+
   

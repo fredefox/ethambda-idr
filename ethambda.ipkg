@@ -1,0 +1,19 @@
+package ethambda
+
+sourcedir = src
+
+modules
+  = Ethambda.Common
+  , Ethambda.Position
+  , Ethambda.System
+  , Eth.Prelude
+
+-- opts = --package contrib
+
+pkgs = contrib
+
+-- exe  = app.Main
+
+-- test
+--   = test.Position
+--   , test.Spec

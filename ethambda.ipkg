@@ -10,7 +10,7 @@ modules
 
 -- opts = --package contrib
 
-pkgs = contrib
+pkgs = base, prelude, contrib
 
 -- exe  = app.Main
 

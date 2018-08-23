@@ -55,29 +55,41 @@ AppM a m =
 App : Type -> Type -> Type
 App a x = WriterT (PosNeg a) (Reader Bool) x
 
--- execApp : App a x -> PosNeg a
-execApp : WriterT (PosNeg a) (Reader Bool) x -> PosNeg a
---execApp = (`runReader` True) . execWriterT
-execApp = (\ m => runReader m True) . execWriterT
+-- implementation Functor (ReaderT ?a ?m) where
 
--- execApp1 : App1 a x -> PosNeg a
--- execApp1 = execWriter . (`runReaderT` True)
+
+-- execApp : App a x -> PosNeg a
+execApp : WriterT (PosNeg a) (ReaderT Bool Identity) x -> PosNeg a
+execApp = (`runReader` True) . execWriterT
 
 -- tellPos : AppM a m => a -> m ()
+tellPos : MonadWriter (PosNeg a) m => a -> m ()
 -- tellPos = tell . pos
+tellPos = tell . pos
 
 -- tellNeg : AppM a m => a -> m ()
 -- tellNeg = tell . neg
+tellNeg : MonadWriter (PosNeg a) m => a -> m ()
+tellNeg = tell . neg
 
 -- tellIt : AppM a m => a -> m ()
 -- tellIt a = ask >>= bool (tellNeg a) (tellPos a)
+tellIt
+  : MonadWriter (PosNeg a) m
+  => MonadReader Bool m
+  => a -> m ()
+tellIt a = ask >>= bool (tellNeg a) (tellPos a)
 
 -- positionM : AppM a m => Type a -> m ()
--- positionM = \case
---   Var a => tellIt a
---   Fun t u => do
---     positionM u
---     local not $ positionM t
+positionM
+  : MonadWriter (PosNeg a) n
+  => MonadReader Bool m
+  => Tp a -> m ()
+positionM tp = case tp of
+  Var a => tellIt a
+  Fun t u => do
+    positionM u
+    local not $ positionM t
 
 -- export
 -- position : Type a -> PosNeg a
